@@ -1,61 +1,1059 @@
 {
-  "$schema": "https://github.com/Azure/data-api-builder/releases/latest/download/dab.draft.schema.json",
-  "data-source": {
-    "database-type": "mssql",
-    "connection-string": "@env('DAB_CONNSTRING')",
-    "options": {
-      "set-session-context": false
-    }
-  },
-  "runtime": {
-    "rest": {
-      "enabled": true,
-      "path": "/api",
-      "request-body-strict": false
+    "$schema": "https://github.com/Azure/data-api-builder/releases/download/v1.6.87/dab.draft.schema.json",
+    "data-source": {
+        "database-type": "mssql",
+        "connection-string": "Server=tcp:rfssqldbs.database.windows.net,1433;Initial Catalog=RFSDB01;Persist Security Info=False;User ID=derekpapworth;Password=M!@natrf7736;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     },
-    "graphql": {
-      "enabled": true,
-      "path": "/graphql",
-      "allow-introspection": true
-    },
-    "mcp": {
-      "enabled": true,
-      "path": "/mcp"
-    },
-    "host": {
-      "cors": {
-        "origins": ["*"],
-        "allow-credentials": false
-      },
-      "authentication": {
-        "provider": "Unauthenticated"
-      },
-      "mode": "development"
-    }
-  },
-  "autoentities": {
-    "default": {
-      "patterns": {
-        "include": ["%.%"],
-        "name": "{schema}_{object}"
-      },
-      "template": {
-        "mcp": { "dml-tools": true },
-        "rest": { "enabled": true },
-        "graphql": { "enabled": true },
-        "health": { "enabled": true },
-        "cache": {
-          "enabled": false
+    "runtime": {
+        "rest": {
+            "enabled": true,
+            "path": "/api",
+            "request-body-strict": true
+        },
+        "graphql": {
+            "enabled": true,
+            "path": "/graphql",
+            "allow-introspection": true
+        },
+        "host": {
+            "cors": {
+                "origins": [],
+                "allow-credentials": false
+            },
+            "authentication": {
+                "provider": "EntraID",
+                "jwt": {
+                    "audience": "dd803df0-5d4b-4378-88fa-1c031bbc743b",
+                    "issuer": "https://login.microsoftonline.com/880c13b0-d53e-45a4-b0ea-fa91d077d1c7/v2.0"
+                }
+            },
+            "mode": "development"
         }
-      },
-      "permissions": [
-        {
-          "role": "anonymous",
-          "actions": [
-            "*"
-          ]
+    },
+    "routes": {
+        "/health": {
+            "methods": [ "GET" ],
+            "type": "function",
+            "source": "static",
+            "response": {
+                "status": "ok"
+            }
         }
-      ]
+    },
+    "entities": {
+        "kwAgency": {
+            "source": {
+                "object": "dbo.kwAgency",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwAgency",
+                    "plural": "kwAgencies"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ],
+            "relationships": {
+                "tblGrant": {
+                    "cardinality": "many",
+                    "target.entity": "tblGrant",
+                    "source.fields": [
+                        "Title"
+                    ],
+                    "target.fields": [
+                        "Agency"
+                    ],
+                    "linking.source.fields": [],
+                    "linking.target.fields": []
+                }
+            }
+        },
+        "kwBorough": {
+            "source": {
+                "object": "dbo.kwBorough",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwBorough",
+                    "plural": "kwBoroughs"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwBrand": {
+            "source": {
+                "object": "dbo.kwBrand",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwBrand",
+                    "plural": "kwBrands"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwColour": {
+            "source": {
+                "object": "dbo.kwColour",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwColour",
+                    "plural": "kwColours"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwDayBlockOuts": {
+            "source": {
+                "object": "dbo.kwDayBlockOuts",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwDayBlockOuts",
+                    "plural": "kwDayBlockOuts"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwDayPostCodes": {
+            "source": {
+                "object": "dbo.kwDayPostCodes",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwDayPostCodes",
+                    "plural": "kwDayPostCodes"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwDepartment": {
+            "source": {
+                "object": "dbo.kwDepartment",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwDepartment",
+                    "plural": "kwDepartments"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwDriver": {
+            "source": {
+                "object": "dbo.kwDriver",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwDriver",
+                    "plural": "kwDrivers"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwGrade": {
+            "source": {
+                "object": "dbo.kwGrade",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwGrade",
+                    "plural": "kwGrades"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwGrantItemList": {
+            "source": {
+                "object": "dbo.kwGrantItemList",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwGrantItemList",
+                    "plural": "kwGrantItemLists"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwItem": {
+            "source": {
+                "object": "dbo.kwItem",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwItem",
+                    "plural": "kwItems"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwLocation": {
+            "source": {
+                "object": "dbo.kwLocation",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwLocation",
+                    "plural": "kwLocations"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwMaterial": {
+            "source": {
+                "object": "dbo.kwMaterial",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwMaterial",
+                    "plural": "kwMaterials"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwOutcome": {
+            "source": {
+                "object": "dbo.kwOutcome",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwOutcome",
+                    "plural": "kwOutcomes"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwPrefix": {
+            "source": {
+                "object": "dbo.kwPrefix",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwPrefix",
+                    "plural": "kwPrefixes"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwSize": {
+            "source": {
+                "object": "dbo.kwSize",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwSize",
+                    "plural": "kwSizes"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwSMSTexts": {
+            "source": {
+                "object": "dbo.kwSMSTexts",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwSMSTexts",
+                    "plural": "kwSMSTexts"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "kwTransferType": {
+            "source": {
+                "object": "dbo.kwTransferType",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "kwTransferType",
+                    "plural": "kwTransferTypes"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tbInvBalance": {
+            "source": {
+                "object": "dbo.tbInvBalance",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tbInvBalance",
+                    "plural": "tbInvBalances"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tbInvYear": {
+            "source": {
+                "object": "dbo.tbInvYear",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tbInvYear",
+                    "plural": "tbInvYears"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblAppUsers": {
+            "source": {
+                "object": "dbo.tblAppUsers",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblAppUsers",
+                    "plural": "tblAppUsers"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblCustSupp": {
+            "source": {
+                "object": "dbo.tblCustSupp",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblCustSupp",
+                    "plural": "tblCustSupps"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblExtUsers": {
+            "source": {
+                "object": "dbo.tblExtUsers",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblExtUsers",
+                    "plural": "tblExtUsers"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblFixedAssets": {
+            "source": {
+                "object": "dbo.tblFixedAssets",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblFixedAssets",
+                    "plural": "tblFixedAssets"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblFixedAssetsDepn": {
+            "source": {
+                "object": "dbo.tblFixedAssetsDepn",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblFixedAssetsDepn",
+                    "plural": "tblFixedAssetsDepns"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblGiftAid": {
+            "source": {
+                "object": "dbo.tblGiftAid",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblGiftAid",
+                    "plural": "tblGiftAids"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblGrant": {
+            "source": {
+                "object": "dbo.tblGrant",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblGrant",
+                    "plural": "tblGrants"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ],
+            "relationships": {
+                "tblCustSupp": {
+                    "cardinality": "many",
+                    "target.entity": "tblCustSupp",
+                    "source.fields": [
+                        "CustSuppID"
+                    ],
+                    "target.fields": [
+                        "id"
+                    ],
+                    "linking.source.fields": [],
+                    "linking.target.fields": []
+                },
+                "tblTransfer": {
+                    "cardinality": "many",
+                    "target.entity": "tblTransfer",
+                    "source.fields": [
+                        "id"
+                    ],
+                    "target.fields": [
+                        "GrantID"
+                    ],
+                    "linking.source.fields": [],
+                    "linking.target.fields": []
+                },
+                "tblGrantItems": {
+                    "cardinality": "many",
+                    "target.entity": "tblGrantItems",
+                    "source.fields": [
+                        "id"
+                    ],
+                    "target.fields": [
+                        "GrantID"
+                    ],
+                    "linking.source.fields": [],
+                    "linking.target.fields": []
+                }
+            }
+        },
+        "tblGrantItems": {
+            "source": {
+                "object": "dbo.tblGrantItems",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblGrantItems",
+                    "plural": "tblGrantItems"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblInventory": {
+            "source": {
+                "object": "dbo.tblInventory",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblInventory",
+                    "plural": "tblInventories"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblMonitor": {
+            "source": {
+                "object": "dbo.tblMonitor",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblMonitor",
+                    "plural": "tblMonitors"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblPayment": {
+            "source": {
+                "object": "dbo.tblPayment",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblPayment",
+                    "plural": "tblPayments"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblPaymentRecon": {
+            "source": {
+                "object": "dbo.tblPaymentRecon",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblPaymentRecon",
+                    "plural": "tblPaymentRecons"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblReminders": {
+            "source": {
+                "object": "dbo.tblReminders",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblReminders",
+                    "plural": "tblReminders"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblSerialNo": {
+            "source": {
+                "object": "dbo.tblSerialNo",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblSerialNo",
+                    "plural": "tblSerialNos"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tblTransfer": {
+            "source": {
+                "object": "dbo.tblTransfer",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblTransfer",
+                    "plural": "tblTransfers"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ],
+            "relationships": {
+                "tblTransferItem": {
+                    "cardinality": "many",
+                    "target.entity": "tblTransferItem",
+                    "source.fields": [
+                        "id"
+                    ],
+                    "target.fields": [
+                        "TransferID"
+                    ],
+                    "linking.source.fields": [],
+                    "linking.target.fields": []
+                },
+                "tblPayment": {
+                    "cardinality": "many",
+                    "target.entity": "tblPayment",
+                    "source.fields": [
+                        "id"
+                    ],
+                    "target.fields": [
+                        "TransferID"
+                    ],
+                    "linking.source.fields": [],
+                    "linking.target.fields": []
+                }
+            }
+        },
+        "tblTransferItem": {
+            "source": {
+                "object": "dbo.tblTransferItem",
+                "type": "table"
+            },
+            "graphql": {
+                "enabled": true,
+                "type": {
+                    "singular": "tblTransferItem",
+                    "plural": "tblTransferItems"
+                }
+            },
+            "rest": {
+                "enabled": true
+            },
+            "permissions": [
+                {
+                    "role": "anonymous",
+                    "actions": [
+                        {
+                            "action": "read"
+                        }
+                    ]
+                }
+            ]
+        }
     }
-  }
 }
